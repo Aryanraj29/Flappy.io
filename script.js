@@ -34,7 +34,7 @@ let gamePaused = false;
 const fly = new Audio();
 const scor = new Audio();
 
-fly.src = "wing-flap-1-6434.mp3";
+fly.src = "sounds/fly.mp3";
 scor.src = "score.wav";
 
 document.addEventListener("keydown", moveUp);
@@ -60,7 +60,7 @@ function resizeCanvas() {
 
 function resetBirdPosition() {
     bX = 10;
-    bY = canvas.height / 2 - birdHeight / 2;
+    bY = canvas.height / 2 - birdOriginalHeight * (canvas.height / 480) / 2;
 }
 
 function draw() {
@@ -80,10 +80,10 @@ function draw() {
         ctx.drawImage(pipeSouth, pipes[i].x, pipeSouthY, pipeWidth, pipeHeight);
 
         if (!gamePaused) {
-            pipes[i].x -= canvas.width / 320; // Adjust pipe speed based on canvas width
+            pipes[i].x -= 2; // Adjust pipe speed
         }
 
-        if (pipes[i].x <= canvas.width / 2 && pipes[i].x + canvas.width / 320 > canvas.width / 2) {
+        if (pipes[i].x === canvas.width / 2) {
             pipes.push({
                 x: canvas.width,
                 y: Math.floor(Math.random() * pipeHeight) - pipeHeight
