@@ -8,11 +8,11 @@ const fg = new Image();
 const pipeNorth = new Image();
 const pipeSouth = new Image();
 
-bird.src = "t1.png";
-bg.src = "background.png";
-fg.src = "twitty1.jpg";
-pipeNorth.src = "north1.png";
-pipeSouth.src = "north1.png";
+bird.src = "images/bird.png";
+bg.src = "images/bg.png";
+fg.src = "images/fg.png";
+pipeNorth.src = "images/pipeNorth.png";
+pipeSouth.src = "images/pipeSouth.png";
 
 // Adjust image sizes
 const birdWidth = 34;
@@ -28,54 +28,71 @@ let bX = 10;
 let bY = 150;
 const gravity = 1.5;
 let score = 0;
+let pipes = [];
+let gameInterval;
+let gamePaused = false;
 
 // Audio files
 const fly = new Audio();
 const scor = new Audio();
 
-fly.src = "wing-flap-1-6434.mp3";
-scor.src = "score.wav";
+fly.src = "sounds/fly.mp3";
+scor.src = "sounds/score.mp3";
 
 // Keydown event
 document.addEventListener("keydown", moveUp);
 
+// Mouse click event for desktop
+canvas.addEventListener("mousedown", moveUp);
+
+// Touch event for mobile devices
+canvas.addEventListener("touchstart", function(event) {
+    event.preventDefault(); // Prevent the default behavior of touch
+    moveUp();
+});
+
 function moveUp() {
-    bY -= 25;
-    fly.play();
+    if (!gamePaused) {
+        bY -= 25;
+        fly.play();
+    }
 }
 
-// Pipe coordinates
-const pipe = [];
-
-pipe[0] = {
+// Initial pipe
+pipes.push({
     x: canvas.width,
     y: 0
-};
+});
 
 // Draw function
 function draw() {
     ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
-    for(let i = 0; i < pipe.length; i++) {
-        ctx.drawImage(pipeNorth, pipe[i].x, pipe[i].y, pipeWidth, pipeHeight);
-        ctx.drawImage(pipeSouth, pipe[i].x, pipe[i].y + constant, pipeWidth, pipeHeight);
+    for (let i = 0; i < pipes.length; i++) {
+        const pipeNorthY = pipes[i].y;
+        const pipeSouthY = pipeNorthY + constant;
 
-        pipe[i].x--;
+        ctx.drawImage(pipeNorth, pipes[i].x, pipeNorthY, pipeWidth, pipeHeight);
+        ctx.drawImage(pipeSouth, pipes[i].x, pipeSouthY, pipeWidth, pipeHeight);
 
-        if(pipe[i].x == 125) {
-            pipe.push({
+        if (!gamePaused) {
+            pipes[i].x--;
+        }
+
+        if (pipes[i].x === 125) {
+            pipes.push({
                 x: canvas.width,
                 y: Math.floor(Math.random() * pipeHeight) - pipeHeight
             });
         }
 
-        // Detect collision
-        if(bX + birdWidth >= pipe[i].x && bX <= pipe[i].x + pipeWidth &&
-           (bY <= pipe[i].y + pipeHeight || bY + birdHeight >= pipe[i].y + constant) || bY + birdHeight >= canvas.height - fgHeight) {
+        // Detect collision with pipes
+        if (bX + birdWidth >= pipes[i].x && bX <= pipes[i].x + pipeWidth &&
+            (bY <= pipeNorthY + pipeHeight || bY + birdHeight >= pipeSouthY)) {
             location.reload(); // Reload the page
         }
 
-        if(pipe[i].x == 5) {
+        if (pipes[i].x === 5) {
             score++;
             scor.play();
         }
@@ -84,13 +101,46 @@ function draw() {
     ctx.drawImage(fg, 0, canvas.height - fgHeight, canvas.width, fgHeight);
     ctx.drawImage(bird, bX, bY, birdWidth, birdHeight);
 
-    bY += gravity;
+    // Add gravity
+    if (!gamePaused) {
+        bY += gravity;
+    }
+
+    // Detect collision with ground or ceiling
+    if (bY + birdHeight >= canvas.height - fgHeight || bY <= 0) {
+        location.reload(); // Reload the page
+    }
 
     ctx.fillStyle = "#000";
     ctx.font = "20px Verdana";
     ctx.fillText("Score : " + score, 10, canvas.height - 20);
-
-    requestAnimationFrame(draw);
 }
 
-draw();
+function startGame() {
+    if (!gameInterval) {
+        gamePaused = false;
+        gameInterval = requestAnimationFrame(gameLoop);
+    }
+}
+
+function pauseGame() {
+    gamePaused = true;
+    cancelAnimationFrame(gameInterval);
+    gameInterval = null;
+}
+
+function gameLoop() {
+    draw();
+    if (!gamePaused) {
+        gameInterval = requestAnimationFrame(gameLoop);
+    }
+}
+
+// Ensure images are loaded before starting the game
+window.onload = function() {
+    draw();
+};
+
+document.getElementById('startButton').addEventListener('click', startGame);
+document.getElementById('pauseButton').addEventListener('click', pauseGame);
+
