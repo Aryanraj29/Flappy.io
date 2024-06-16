@@ -63,6 +63,14 @@ function resetBirdPosition() {
     bY = canvas.height / 2 - birdOriginalHeight * (canvas.height / 480) / 2;
 }
 
+function initializePipes() {
+    pipes = [];
+    pipes.push({
+        x: canvas.width,
+        y: 0
+    });
+}
+
 function draw() {
     const birdWidth = birdOriginalWidth * (canvas.width / 320);
     const birdHeight = birdOriginalHeight * (canvas.height / 480);
@@ -120,6 +128,7 @@ function draw() {
 function startGame() {
     if (!gameInterval) {
         gamePaused = false;
+        initializePipes();
         gameInterval = requestAnimationFrame(gameLoop);
     }
 }
@@ -146,3 +155,4 @@ resizeCanvas();
 
 document.getElementById('startButton').addEventListener('click', startGame);
 document.getElementById('pauseButton').addEventListener('click', pauseGame);
+
