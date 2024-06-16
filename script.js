@@ -20,7 +20,8 @@ const fgOriginalHeight = 112;
 const pipeOriginalWidth = 52;
 const pipeOriginalHeight = 242;
 
-const gap = 85;
+let gapFactor = 4; // Adjust this factor to control gap size relative to bird size
+let gap = birdOriginalHeight * gapFactor;
 let constant = pipeOriginalHeight + gap;
 
 let bX = 10;
@@ -54,6 +55,7 @@ function moveUp() {
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    gap = birdOriginalHeight * gapFactor;
     constant = (pipeOriginalHeight * (canvas.height / 480)) + gap;
     resetBirdPosition();
 }
@@ -67,7 +69,7 @@ function initializePipes() {
     pipes = [];
     pipes.push({
         x: canvas.width,
-        y: 0
+        y: Math.floor(Math.random() * pipeOriginalHeight) - pipeOriginalHeight
     });
 }
 
@@ -88,13 +90,13 @@ function draw() {
         ctx.drawImage(pipeSouth, pipes[i].x, pipeSouthY, pipeWidth, pipeHeight);
 
         if (!gamePaused) {
-            pipes[i].x -= 2; // Adjust pipe speed
+            pipes[i].x -= 2 + score * 0.1; // Increase pipe speed gradually
         }
 
         if (pipes[i].x === canvas.width / 2) {
             pipes.push({
                 x: canvas.width,
-                y: Math.floor(Math.random() * pipeHeight) - pipeHeight
+                y: Math.floor(Math.random() * pipeOriginalHeight) - pipeOriginalHeight
             });
         }
 
