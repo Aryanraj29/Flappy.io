@@ -1,20 +1,18 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-// Load images
 const bird = new Image();
 const bg = new Image();
 const fg = new Image();
 const pipeNorth = new Image();
 const pipeSouth = new Image();
 
-bird.src = "images/bird.png";
-bg.src = "images/bg.png";
-fg.src = "images/fg.png";
-pipeNorth.src = "images/pipeNorth.png";
-pipeSouth.src = "images/pipeSouth.png";
+bird.src = "t1.png";
+bg.src = "background.png";
+fg.src = "twitty1.jpg";
+pipeNorth.src = "north1.png";
+pipeSouth.src = "north1.png";
 
-// Adjust image sizes
 const birdWidth = 34;
 const birdHeight = 24;
 const fgHeight = 112;
@@ -22,7 +20,7 @@ const pipeWidth = 52;
 const pipeHeight = 242;
 
 const gap = 85;
-const constant = pipeHeight + gap;
+let constant = pipeHeight + gap;
 
 let bX = 10;
 let bY = 150;
@@ -32,22 +30,16 @@ let pipes = [];
 let gameInterval;
 let gamePaused = false;
 
-// Audio files
 const fly = new Audio();
 const scor = new Audio();
 
-fly.src = "sounds/fly.mp3";
-scor.src = "sounds/score.mp3";
+fly.src = "wing-flap-1-6434.mp3";
+scor.src = "score.wav";
 
-// Keydown event
 document.addEventListener("keydown", moveUp);
-
-// Mouse click event for desktop
 canvas.addEventListener("mousedown", moveUp);
-
-// Touch event for mobile devices
 canvas.addEventListener("touchstart", function(event) {
-    event.preventDefault(); // Prevent the default behavior of touch
+    event.preventDefault();
     moveUp();
 });
 
@@ -58,13 +50,20 @@ function moveUp() {
     }
 }
 
-// Initial pipe
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    constant = pipeHeight + gap;
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
 pipes.push({
     x: canvas.width,
     y: 0
 });
 
-// Draw function
 function draw() {
     ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
@@ -86,10 +85,9 @@ function draw() {
             });
         }
 
-        // Detect collision with pipes
         if (bX + birdWidth >= pipes[i].x && bX <= pipes[i].x + pipeWidth &&
             (bY <= pipeNorthY + pipeHeight || bY + birdHeight >= pipeSouthY)) {
-            location.reload(); // Reload the page
+            location.reload();
         }
 
         if (pipes[i].x === 5) {
@@ -101,14 +99,12 @@ function draw() {
     ctx.drawImage(fg, 0, canvas.height - fgHeight, canvas.width, fgHeight);
     ctx.drawImage(bird, bX, bY, birdWidth, birdHeight);
 
-    // Add gravity
     if (!gamePaused) {
         bY += gravity;
     }
 
-    // Detect collision with ground or ceiling
     if (bY + birdHeight >= canvas.height - fgHeight || bY <= 0) {
-        location.reload(); // Reload the page
+        location.reload();
     }
 
     ctx.fillStyle = "#000";
@@ -136,11 +132,9 @@ function gameLoop() {
     }
 }
 
-// Ensure images are loaded before starting the game
 window.onload = function() {
     draw();
 };
 
 document.getElementById('startButton').addEventListener('click', startGame);
 document.getElementById('pauseButton').addEventListener('click', pauseGame);
-
