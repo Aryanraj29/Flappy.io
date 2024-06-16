@@ -8,10 +8,21 @@
             margin: 0 auto;
             background-color: #70c5ce;
         }
+        #controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
     <canvas id="canvas" width="320" height="480"></canvas>
-    <script src="script.js"></script>
+    <div id="controls">
+        <button id="startButton">Start</button>
+        <button id="pauseButton">Pause</button>
+    </div>
+    <script src="game.js"></script>
 </body>
 </html>
