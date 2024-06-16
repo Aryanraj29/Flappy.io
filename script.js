@@ -13,14 +13,15 @@ fg.src = "twitty1.jpg";
 pipeNorth.src = "north1.png";
 pipeSouth.src = "north1.png";
 
-const birdWidth = 34;
-const birdHeight = 24;
-const fgHeight = 112;
-const pipeWidth = 52;
-const pipeHeight = 242;
+// Original dimensions
+const birdOriginalWidth = 34;
+const birdOriginalHeight = 24;
+const fgOriginalHeight = 112;
+const pipeOriginalWidth = 52;
+const pipeOriginalHeight = 242;
 
 const gap = 85;
-let constant = pipeHeight + gap;
+let constant = pipeOriginalHeight + gap;
 
 let bX = 10;
 let bY = 150;
@@ -53,18 +54,22 @@ function moveUp() {
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    constant = pipeHeight + gap;
+    constant = (pipeOriginalHeight * (canvas.height / 480)) + gap;
+    resetBirdPosition();
 }
 
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-pipes.push({
-    x: canvas.width,
-    y: 0
-});
+function resetBirdPosition() {
+    bX = 10;
+    bY = canvas.height / 2 - birdHeight / 2;
+}
 
 function draw() {
+    const birdWidth = birdOriginalWidth * (canvas.width / 320);
+    const birdHeight = birdOriginalHeight * (canvas.height / 480);
+    const fgHeight = fgOriginalHeight * (canvas.height / 480);
+    const pipeWidth = pipeOriginalWidth * (canvas.width / 320);
+    const pipeHeight = pipeOriginalHeight * (canvas.height / 480);
+
     ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < pipes.length; i++) {
@@ -75,10 +80,10 @@ function draw() {
         ctx.drawImage(pipeSouth, pipes[i].x, pipeSouthY, pipeWidth, pipeHeight);
 
         if (!gamePaused) {
-            pipes[i].x--;
+            pipes[i].x -= canvas.width / 320; // Adjust pipe speed based on canvas width
         }
 
-        if (pipes[i].x === 125) {
+        if (pipes[i].x <= canvas.width / 2 && pipes[i].x + canvas.width / 320 > canvas.width / 2) {
             pipes.push({
                 x: canvas.width,
                 y: Math.floor(Math.random() * pipeHeight) - pipeHeight
@@ -135,6 +140,9 @@ function gameLoop() {
 window.onload = function() {
     draw();
 };
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
 document.getElementById('startButton').addEventListener('click', startGame);
 document.getElementById('pauseButton').addEventListener('click', pauseGame);
