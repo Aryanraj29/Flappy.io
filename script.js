@@ -21,6 +21,7 @@ const pipeOriginalWidth = 52;
 const pipeOriginalHeight = 242;
 
 let gapFactor = 4; // Adjust this factor to control gap size relative to bird size
+let minGapMultiplier = 1.5; // Minimum gap size relative to bird size
 let gap = birdOriginalHeight * gapFactor;
 let constant = pipeOriginalHeight + gap;
 
