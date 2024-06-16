@@ -3,22 +3,36 @@
 <head>
     <title>Flappy Bird Game</title>
     <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #70c5ce;
+        }
         canvas {
-            display: block;
-            margin: 0 auto;
             background-color: #70c5ce;
         }
         #controls {
-            text-align: center;
-            margin-top: 20px;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
         }
         button {
             margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas" width="320" height="480"></canvas>
+    <canvas id="canvas"></canvas>
     <div id="controls">
         <button id="startButton">Start</button>
         <button id="pauseButton">Pause</button>
@@ -26,3 +40,4 @@
     <script src="game.js"></script>
 </body>
 </html>
+
