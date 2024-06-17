@@ -94,12 +94,14 @@ function draw() {
             pipes[i].x -= 2 + score * 0.1; // Increase pipe speed gradually
         }
 
+        // Remove pipes that are off screen
         if (pipes[i].x + pipeWidth <= 0) {
             pipes.splice(i, 1);
             score++;
             scor.play();
         }
 
+        // Add new pipe
         if (pipes[i].x === canvas.width / 2) {
             pipes.push({
                 x: canvas.width,
@@ -107,6 +109,7 @@ function draw() {
             });
         }
 
+        // Check for collisions
         if (bX + birdWidth >= pipes[i].x && bX <= pipes[i].x + pipeWidth &&
             (bY <= pipeNorthY + pipeHeight || bY + birdHeight >= pipeSouthY)) {
             location.reload(); // Reload the page if the bird hits a pipe
