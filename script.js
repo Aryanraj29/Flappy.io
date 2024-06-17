@@ -56,7 +56,7 @@ function moveUp() {
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    gap = birdOriginalHeight * gapFactor;
+    gap = Math.max(birdOriginalHeight * minGapMultiplier, birdOriginalHeight * gapFactor);
     constant = (pipeOriginalHeight * (canvas.height / 480)) + gap;
     resetBirdPosition();
 }
@@ -92,6 +92,12 @@ function draw() {
 
         if (!gamePaused) {
             pipes[i].x -= 2 + score * 0.1; // Increase pipe speed gradually
+        }
+
+        if (pipes[i].x + pipeWidth <= 0) {
+            pipes.splice(i, 1);
+            i--;
+            continue;
         }
 
         if (pipes[i].x === canvas.width / 2) {
