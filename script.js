@@ -136,10 +136,17 @@ function startGame() {
     }
 }
 
-function pauseGame() {
-    gamePaused = true;
-    cancelAnimationFrame(gameInterval);
-    gameInterval = null;
+function togglePause() {
+    if (gamePaused) {
+        gamePaused = false;
+        gameInterval = requestAnimationFrame(gameLoop);
+        document.getElementById('pauseButton').innerText = "Pause";
+    } else {
+        gamePaused = true;
+        cancelAnimationFrame(gameInterval);
+        gameInterval = null;
+        document.getElementById('pauseButton').innerText = "Play";
+    }
 }
 
 function gameLoop() {
@@ -157,5 +164,4 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 document.getElementById('startButton').addEventListener('click', startGame);
-document.getElementById('pauseButton').addEventListener('click', pauseGame);
-
+document.getElementById('pauseButton').addEventListener('click', togglePause);
