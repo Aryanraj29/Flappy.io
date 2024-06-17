@@ -21,7 +21,7 @@ const pipeOriginalWidth = 52;
 const pipeOriginalHeight = 242;
 
 let gapFactor = 4; // Adjust this factor to control gap size relative to bird size
-let minGapMultiplier = 1.5; // Minimum gap size relative to bird size
+let minGapMultiplier = 1.6; // Minimum gap size relative to bird size
 let gap = birdOriginalHeight * gapFactor;
 let constant = pipeOriginalHeight + gap;
 
@@ -96,8 +96,8 @@ function draw() {
 
         if (pipes[i].x + pipeWidth <= 0) {
             pipes.splice(i, 1);
-            i--;
-            continue;
+            score++;
+            scor.play();
         }
 
         if (pipes[i].x === canvas.width / 2) {
@@ -109,12 +109,7 @@ function draw() {
 
         if (bX + birdWidth >= pipes[i].x && bX <= pipes[i].x + pipeWidth &&
             (bY <= pipeNorthY + pipeHeight || bY + birdHeight >= pipeSouthY)) {
-            location.reload();
-        }
-
-        if (pipes[i].x === 5) {
-            score++;
-            scor.play();
+            location.reload(); // Reload the page if the bird hits a pipe
         }
     }
 
@@ -126,7 +121,7 @@ function draw() {
     }
 
     if (bY + birdHeight >= canvas.height - fgHeight || bY <= 0) {
-        location.reload();
+        location.reload(); // Reload the page if the bird hits the ground or flies too high
     }
 
     ctx.fillStyle = "#000";
